@@ -1,0 +1,9 @@
+[package]
+name = "compiled-nnng"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+compiled-nn-bindings = {path = "compiled-nn-bindings", version = "0.1.0"}
