@@ -1,9 +1,11 @@
 [package]
+description = "A JIT Compiler for Neural Network Inference"
+edition = "2021"
+homepage = "https://github.com/HULKs/CompiledNN"
+license = "MIT"
 name = "compiled-nn-bindings"
 version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
 bindgen = "0.59.2"
+walkdir = "2.3.2"
