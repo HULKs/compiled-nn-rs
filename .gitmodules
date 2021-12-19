@@ -1,3 +1,3 @@
 [submodule "compiled-nn-bindings/CompiledNN"]
 	path = compiled-nn-bindings/CompiledNN
-	url = https://github.com/bhuman/CompiledNN.git
+	url = https://github.com/HULKs/CompiledNN.git
