@@ -1,11 +1,11 @@
 [package]
 description = "A JIT Compiler for Neural Network Inference"
-edition = "2021"
+edition = "2018"
 exclude = ["/hdf5/hl", "/hdf5/tools", "/hdf5/tools"]
 homepage = "https://github.com/HULKs/CompiledNN"
 license = "MIT"
 name = "compiled-nn-bindings"
-version = "0.2.0"
+version = "0.3.0"
 
 [build-dependencies]
 bindgen = "0.59.2"

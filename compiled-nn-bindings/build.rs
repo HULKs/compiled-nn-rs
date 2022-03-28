@@ -1,6 +1,6 @@
 extern crate bindgen;
 
-use std::{env, fs::remove_file, path::PathBuf, process::Command};
+use std::{env, path::PathBuf, process::Command};
 
 use walkdir::WalkDir;
 
@@ -30,15 +30,24 @@ fn run_cmake(build_path: &PathBuf, arguments: &[&str]) {
 
 fn main() {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+
+    let hdf5_source_path = out_path.join("hdf5/source/");
     let hdf5_build_path = out_path.join("hdf5/build/");
     let hdf5_install_path = out_path.join("hdf5/install/");
     let hdf5_cmake_install_prefix =
         format!("-DCMAKE_INSTALL_PREFIX={}", hdf5_install_path.display());
+    let status = Command::new("rsync")
+        .args(["-a", "--mkpath", "hdf5/", hdf5_source_path.to_str().unwrap()])
+        .status()
+        .expect("Failed to execute rsync process");
+    if !status.success() {
+        panic!("rsync process exited with {:?}", status.code());
+    }
     run_cmake(
         &hdf5_build_path,
         &[
             "-S",
-            "hdf5",
+            hdf5_source_path.to_str().unwrap(),
             "-B",
             hdf5_build_path.to_str().unwrap(),
             "-G",
@@ -54,13 +63,6 @@ fn main() {
             hdf5_cmake_install_prefix.as_str(),
         ],
     );
-    // Since the crappy HDF5 modifies the source tree, we need to clean things up to make cargo happy
-    remove_file("hdf5/src/H5Edefin.h").unwrap();
-    remove_file("hdf5/src/H5Einit.h").unwrap();
-    remove_file("hdf5/src/H5Epubgen.h").unwrap();
-    remove_file("hdf5/src/H5Eterm.h").unwrap();
-    remove_file("hdf5/src/H5overflow.h").unwrap();
-    remove_file("hdf5/src/H5version.h").unwrap();
 
     let compiled_nn_build_path = out_path.join("CompiledNN/build/");
     let compiled_nn_install_path = out_path.join("CompiledNN/install/");
