@@ -1,3 +1,6 @@
 [submodule "compiled-nn-bindings/CompiledNN"]
 	path = compiled-nn-bindings/CompiledNN
 	url = https://github.com/HULKs/CompiledNN.git
+[submodule "compiled-nn-bindings/hdf5"]
+	path = compiled-nn-bindings/hdf5
+	url = https://github.com/HDFGroup/hdf5.git
