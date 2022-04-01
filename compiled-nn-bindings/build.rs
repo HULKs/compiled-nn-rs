@@ -3,6 +3,7 @@ extern crate bindgen;
 use std::{env, path::PathBuf, process::Command};
 
 use cmake::Config;
+use glob::glob;
 use walkdir::WalkDir;
 
 fn main() {
@@ -48,6 +49,7 @@ fn main() {
         .define("BUILD_TESTING", "OFF")
         .define("WITH_ONNX", "OFF")
         .define("HDF5_ROOT", &hdf5_install_path)
+        .define("HDF5_USE_STATIC_LIBRARIES", "ON")
         .build();
 
     println!("cargo:rerun-if-changed=wrapper.h");
@@ -83,7 +85,15 @@ fn main() {
         "cargo:rustc-link-search=native={}",
         compiled_nn_library_path.display()
     );
-    println!("cargo:rustc-link-lib=static=hdf5");
+    if glob(hdf5_library_path.join("*hdf5*debug*").to_str().unwrap())
+        .expect("Failed to glob for hdf5 debug library")
+        .next()
+        .is_some()
+    {
+        println!("cargo:rustc-link-lib=static=hdf5_debug");
+    } else {
+        println!("cargo:rustc-link-lib=static=hdf5");
+    }
     println!("cargo:rustc-link-lib=static=CompiledNN");
     println!("cargo:rustc-link-lib=dylib=stdc++");
 
