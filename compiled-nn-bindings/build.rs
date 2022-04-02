@@ -49,7 +49,6 @@ fn main() {
         .define("BUILD_TESTING", "OFF")
         .define("WITH_ONNX", "OFF")
         .define("HDF5_ROOT", &hdf5_install_path)
-        .define("HDF5_USE_STATIC_LIBRARIES", "ON")
         .build();
 
     println!("cargo:rerun-if-changed=wrapper.h");
