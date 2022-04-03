@@ -5,7 +5,7 @@ exclude = ["/hdf5/hl", "/hdf5/tools", "/hdf5/tools"]
 homepage = "https://github.com/HULKs/CompiledNN"
 license = "MIT"
 name = "compiled-nn-bindings"
-version = "0.3.0"
+version = "0.4.0"
 
 [build-dependencies]
 bindgen = "0.59.2"
