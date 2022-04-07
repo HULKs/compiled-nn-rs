@@ -44,11 +44,13 @@ fn main() {
         .define("H5_NO_ALIGNMENT_RESTRICTIONS_RUN", "0")
         .define("H5_NO_ALIGNMENT_RESTRICTIONS_RUN__TRYRUN_OUTPUT", "")
         .build();
+    let hdf5_include_directory_path = hdf5_install_path.join("include");
 
     let compiled_nn_install_path = Config::new("CompiledNN")
         .define("BUILD_TESTING", "OFF")
         .define("WITH_ONNX", "OFF")
         .define("HDF5_ROOT", &hdf5_install_path)
+        .cxxflag(format!("-I{}", hdf5_include_directory_path.display()))
         .build();
 
     println!("cargo:rerun-if-changed=wrapper.h");
