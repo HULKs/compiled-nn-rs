@@ -1,7 +1,19 @@
 [package]
 description = "A JIT Compiler for Neural Network Inference"
 edition = "2018"
-exclude = ["/hdf5/hl", "/hdf5/tools", "/hdf5/tools"]
+exclude = [
+  "/CompiledNN/hdf5/c++",
+  "/CompiledNN/hdf5/doxygen",
+  "/CompiledNN/hdf5/examples",
+  "/CompiledNN/hdf5/fortran",
+  "/CompiledNN/hdf5/hl",
+  "/CompiledNN/hdf5/java",
+  "/CompiledNN/hdf5/release_docs",
+  "/CompiledNN/hdf5/tests",
+  "/CompiledNN/hdf5/testpar",
+  "/CompiledNN/hdf5/tools",
+  "/CompiledNN/hdf5/utils",
+]
 homepage = "https://github.com/HULKs/CompiledNN"
 license = "MIT"
 name = "compiled-nn-bindings"

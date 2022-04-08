@@ -18,7 +18,7 @@ fn main() {
         panic!("rsync process exited with {:?}", status.code());
     }
 
-    let install_path = Config::new("CompiledNN")
+    let install_path = Config::new(source_path)
         .define("BUILD_SHARED_LIBS", "OFF")
         .define("BUILD_TESTING", "OFF")
         .define("HDF5_BUILD_TOOLS", "OFF")
