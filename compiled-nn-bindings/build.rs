@@ -60,8 +60,10 @@ fn main() {
     }
 
     let library_path = install_path.join("lib/");
+    let library64_path = install_path.join("lib64/");
     let include_path = install_path.join("include/");
     println!("cargo:rustc-link-search=native={}", library_path.display());
+    println!("cargo:rustc-link-search=native={}", library64_path.display());
     if glob(library_path.join("*hdf5*debug*").to_str().unwrap())
         .expect("Failed to glob for hdf5 debug library")
         .next()
