@@ -79,7 +79,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .clang_args(vec!["-x", "c++", "-I", include_path.to_str().unwrap()])
+        .clang_args(vec!["-x", "c++", "-std=c++11", "-I", include_path.to_str().unwrap()])
         .generate()
         .expect("Unable to generate bindings");
 
