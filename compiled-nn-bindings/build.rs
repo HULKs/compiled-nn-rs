@@ -74,7 +74,12 @@ fn main() {
         println!("cargo:rustc-link-lib=static=hdf5");
     }
     println!("cargo:rustc-link-lib=static=CompiledNN");
-    println!("cargo:rustc-link-lib=dylib=stdc++");
+
+    match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
+        "linux" => { println!("cargo:rustc-link-lib=dylib=stdc++"); }
+        "macos" => { println!("cargo:rustc-link-lib=dylib=c++"); }
+        _ => { panic!("We don't seem to be compiling on a known OS, aborting...") }
+    }
 
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
