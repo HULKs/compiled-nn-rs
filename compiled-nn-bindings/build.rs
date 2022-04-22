@@ -4,7 +4,6 @@ extern crate pkg_config;
 use std::{env, path::PathBuf, process::Command};
 
 use cmake::Config;
-use glob::glob;
 use walkdir::WalkDir;
 
 fn build_vendored_compiled_nn(out_path: &PathBuf) -> PathBuf {
@@ -65,15 +64,6 @@ fn build_vendored_compiled_nn(out_path: &PathBuf) -> PathBuf {
         "cargo:rustc-link-search=native={}",
         library64_path.display()
     );
-    //if glob(library_path.join("*hdf5*debug*").to_str().unwrap())
-    //    .expect("Failed to glob for hdf5 debug library")
-    //    .next()
-    //    .is_some()
-    //{
-    //    println!("cargo:rustc-link-lib=static=hdf5_debug");
-    //} else {
-    //    println!("cargo:rustc-link-lib=static=hdf5");
-    //}
     println!("cargo:rustc-link-lib=static=CompiledNN");
 
     println!("cargo:rustc-link-lib=dylib=hdf5");
@@ -96,22 +86,28 @@ fn pkg_config_config(config: &pkg_config::Library) {
     for library_path in config.link_paths.iter() {
         println!("cargo:rustc-link-search=native={}", library_path.display());
     }
+
     for library in config.libs.iter() {
         println!("cargo:rustc-link-lib=dylib={}", library);
     }
 }
 
-fn generate_bindings(include_path: &PathBuf, out_path: &PathBuf) {
+fn generate_bindings(include_path: &[PathBuf], out_path: &PathBuf) {
+    let clang_args = {
+        let mut args = vec!["-x", "c++", "-std=c++11"];
+        for buf in include_path {
+            if let Some(s) = buf.to_str() {
+                args.push("-I");
+                args.push(s);
+            }
+        }
+        args
+    };
+
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .clang_args(vec![
-            "-x",
-            "c++",
-            "-std=c++11",
-            "-I",
-            include_path.to_str().unwrap(),
-        ])
+        .clang_args(clang_args)
         .generate()
         .expect("Unable to generate bindings");
 
@@ -121,10 +117,6 @@ fn generate_bindings(include_path: &PathBuf, out_path: &PathBuf) {
 }
 
 fn main() {
-    for (key, value) in env::vars() {
-        println!("{}: {}", key, value);
-    }
-
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     let pkg_config = pkg_config::Config::new()
@@ -132,11 +124,11 @@ fn main() {
         .probe("compilednn");
 
     if let Ok(config) = pkg_config {
-        let include_path = config.include_paths.first().unwrap();
+        let include_path = config.include_paths.clone();
         pkg_config_config(&config);
-        generate_bindings(include_path, &out_path);
+        generate_bindings(include_path.as_slice(), &out_path);
     } else {
-        let include_path = build_vendored_compiled_nn(&out_path);
+        let include_path = vec![build_vendored_compiled_nn(&out_path)];
         generate_bindings(&include_path, &out_path);
     }
 
