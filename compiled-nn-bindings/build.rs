@@ -42,7 +42,7 @@ fn build_vendored_compiled_nn(out_path: &PathBuf) -> PathBuf {
     );
     println!("cargo:rustc-link-lib=static=CompiledNN");
 
-    println!("cargo:rustc-link-lib=hdf5");
+    println!("cargo:rustc-link-lib=dylib=hdf5");
     match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
         "linux" => {
             println!("cargo:rustc-link-lib=dylib=stdc++");
@@ -64,7 +64,7 @@ fn pkg_config_config(config: &pkg_config::Library) {
     }
 
     for library in config.libs.iter() {
-        println!("cargo:rustc-link-lib={}", library);
+        println!("cargo:rustc-link-lib=dylib={}", library);
     }
 }
 
