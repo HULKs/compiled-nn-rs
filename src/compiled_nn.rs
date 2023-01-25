@@ -10,6 +10,8 @@ pub struct CompiledNN {
     core: compiled_nn_bindings::CompiledNN,
 }
 
+unsafe impl Send for CompiledNN {}
+
 impl Default for CompiledNN {
     fn default() -> Self {
         Self {
@@ -25,32 +27,55 @@ impl Drop for CompiledNN {
 }
 
 impl CompiledNN {
-    pub fn compile<P>(&mut self, filename: P)
-    where
-        P: AsRef<Path>,
-    {
+    pub fn compile(&mut self, filename: impl AsRef<Path>) {
         let filename =
             CString::new(filename.as_ref().to_str().unwrap()).expect("CString::new failed");
         unsafe { self.core.compile(filename.as_ptr()) }
     }
 
-    pub fn input(&mut self, index: usize) -> &mut [f32] {
+    pub fn input(&mut self, index: usize) -> Tensor {
         unsafe {
             let input = self.core.input(index as u64);
-            let input_size = self.core.inputSize(index as u64);
-            from_raw_parts_mut(input, input_size as usize)
+            Tensor {
+                data: from_raw_parts(input.data, input.data_size as usize),
+                dimensions: from_raw_parts(input.dimensions, input.dimensions_size as usize),
+            }
         }
     }
 
-    pub fn output(&mut self, index: usize) -> &[f32] {
+    pub fn input_mut(&mut self, index: usize) -> TensorMut {
+        unsafe {
+            let input = self.core.input(index as u64);
+            TensorMut {
+                data: from_raw_parts_mut(input.data, input.data_size as usize),
+                dimensions: from_raw_parts(input.dimensions, input.dimensions_size as usize),
+            }
+        }
+    }
+
+    pub fn output(&mut self, index: usize) -> Tensor {
         unsafe {
             let output = self.core.output(index as u64);
-            let output_size = self.core.outputSize(index as u64);
-            from_raw_parts(output, output_size as usize)
+            Tensor {
+                data: from_raw_parts(output.data, output.data_size as usize),
+                dimensions: from_raw_parts(output.dimensions, output.dimensions_size as usize),
+            }
         }
     }
 
     pub fn apply(&mut self) {
         unsafe { self.core.apply() }
     }
+}
+
+#[derive(Debug)]
+pub struct Tensor<'a> {
+    pub data: &'a [f32],
+    pub dimensions: &'a [u32],
+}
+
+#[derive(Debug)]
+pub struct TensorMut<'a> {
+    pub data: &'a mut [f32],
+    pub dimensions: &'a [u32],
 }

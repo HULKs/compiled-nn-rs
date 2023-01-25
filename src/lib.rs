@@ -1,3 +1,3 @@
 mod compiled_nn;
 
-pub use compiled_nn::CompiledNN;
+pub use crate::compiled_nn::CompiledNN;
