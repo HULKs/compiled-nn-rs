@@ -1,6 +1,6 @@
 [package]
 description = "A JIT Compiler for Neural Network Inference"
-edition = "2018"
+edition = "2021"
 homepage = "https://github.com/HULKs/compiled-nn-rs"
 license = "MIT"
 name = "compiled-nn"

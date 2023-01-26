@@ -1,6 +1,6 @@
 [package]
 description = "A JIT Compiler for Neural Network Inference"
-edition = "2018"
+edition = "2021"
 exclude = [
   "/CompiledNN/hdf5/c++",
   "/CompiledNN/hdf5/doxygen",
