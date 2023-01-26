@@ -17,7 +17,7 @@ exclude = [
 homepage = "https://github.com/HULKs/CompiledNN"
 license = "MIT"
 name = "compiled-nn-bindings"
-version = "0.10.0"
+version = "0.11.0"
 
 [build-dependencies]
 bindgen = "0.63.0"
