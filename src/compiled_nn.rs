@@ -33,7 +33,7 @@ impl CompiledNN {
         unsafe { self.core.compile(filename.as_ptr()) }
     }
 
-    pub fn input(&mut self, index: usize) -> Tensor {
+    pub fn input(&self, index: usize) -> Tensor {
         unsafe {
             let input = self.core.input(index as u64);
             Tensor {
@@ -45,7 +45,7 @@ impl CompiledNN {
 
     pub fn input_mut(&mut self, index: usize) -> TensorMut {
         unsafe {
-            let input = self.core.input(index as u64);
+            let input = self.core.input_mut(index as u64);
             TensorMut {
                 data: from_raw_parts_mut(input.data, input.data_size as usize),
                 dimensions: from_raw_parts(input.dimensions, input.dimensions_size as usize),
@@ -53,11 +53,21 @@ impl CompiledNN {
         }
     }
 
-    pub fn output(&mut self, index: usize) -> Tensor {
+    pub fn output(&self, index: usize) -> Tensor {
         unsafe {
             let output = self.core.output(index as u64);
             Tensor {
                 data: from_raw_parts(output.data, output.data_size as usize),
+                dimensions: from_raw_parts(output.dimensions, output.dimensions_size as usize),
+            }
+        }
+    }
+
+    pub fn output_mut(&mut self, index: usize) -> TensorMut {
+        unsafe {
+            let output = self.core.output_mut(index as u64);
+            TensorMut {
+                data: from_raw_parts_mut(output.data, output.data_size as usize),
                 dimensions: from_raw_parts(output.dimensions, output.dimensions_size as usize),
             }
         }
